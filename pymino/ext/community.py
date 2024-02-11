@@ -1368,7 +1368,37 @@ class Community:
             url = f"/x{self.community_id if comId is None else comId}/s/chat/thread/{chatId}"
             ))
 
-    
+    @community
+    def fetch_chat_users(self, chatId: str, start: int = 0, size: int = 25, comId: Union[str, int] = None) -> CChatMembers:
+        """
+        Fetches the users in a chat.
+
+        :param chatId: The ID of the chat.
+        :type chatId: str
+        :param start: The start index for fetching the users. (Default: 0)
+        :type start: int, optional
+        :param size: The number of users to fetch. (Default: 25)
+        :type size: int, optional
+        :param comId: The ID of the community to fetch the chat thread from. If not provided, the current community ID is used.
+        :type comId: Union[str, int]
+        :return: A `CChatMembers` object containing the chat members.
+        :rtype: CChatMembers
+
+        This function retrieves the users who are members of the specified chat.
+
+        `CChatMembers` represents the members of a chat.
+
+        **Example usage:**
+
+        >>> chat_members = client.community.fetch_chat_users("chat123")
+        ... for member in chat_members.nickname:
+        ...     print(member)
+        """
+        return CChatMembers(self.session.handler(
+            method = "GET",
+            url = f"/x{self.community_id if comId is None else comId}/s/chat/thread/{chatId}/member?start={start}&size={size}&type=default&cv=1.2"
+        ))
+        
     @community
     def fetch_chat_mods(self, chatId: str, comId: Union[str, int] = None, moderators: Optional[str] = "all") -> List[str]:
         """
